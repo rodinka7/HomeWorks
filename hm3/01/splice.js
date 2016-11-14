@@ -1,22 +1,15 @@
 var array = [1,2,3,4,5,6],
 	arr = [];
 
-function arrCreate(val){
-	for(var i = 0; i< val.length; i++){
-		arr[i] = val[i];
-	}
-
-	return arr
-}
-
 function arrSplice(arg, arr) {
 	var arrNew = [],
 		j = 0;
 
-	for (var i = arg[1]; i <= arg[2]; i++) {
-		arrNew[j++] = arr[i];
+	for (var i = arg[1]; i < (arg[1] + arg[2]); i++) {
+		arrNew[j] = arr[i];
+		j++;
 	}
-
+	
 	return arrNew;
 }
 
@@ -42,54 +35,111 @@ function elRemove(arr1, arr2) {
 
 function arrTransform(arr) {
 	for ( var i = 0; i < arr.length; i++) {
-		if (arr[i] === '') {
+		if (arr[i] === ('' || undefined)) {
 
-			for (var k = i; (k+i) < arr.length; k++) {
+			for (var k = i; k < arr.length; k++) {
+		
 				arr[k] = arr[k+1];
 			}
 
 			arr.length -= 1;
-		}
-	}
 
-	for ( var i = 0; i < arr.length; i++) {
-		if (arr[i] === '') {
 			arrTransform(arr);
 		}
-	} return arr;
+		
+	}
 }
 
-function toAdd(arg) {
-	var arr = [],
-		k = arg[3]; 
+function argReplace (arr, arg) {
 
-	for (var i = 0; i < (arg.length - 3); i++) {
-		while (k < arg.length) {
-			arr[i] = arg[k];
+	var k = 3;
 
+	for(var i = 0; i < arr.length; i++) {
+			
+		if(arr[i] === '') {
+			arr[i] = arg[k]
 			k++;
 		}
+			
 	}
 
 	return arr;
 }
 
-function splice() {
-	var arr = arrCreate(arguments[0]),
-		arrSpliced = arrSplice(arguments, arr);
-		res = elRemove(arr, arrSpliced); 
-		i = 0;
-		
-		res = arrTransform(res);
+function arrIncrease (j, arr, arg) {
+	
+	while (j > 0) {
 
-		console.log(res);
-
-		if(arguments.length > 3) {
-			console.log(toAdd(arguments));
+		for (m = arr.length; m > arg[1]; m--) {
+			arr[m] = arr[m-1]; 
 		}
 
+		j--;
+	}
+}
+
+function addArguments(arg, arr) {
+	var k = 3,
+		j,
+		p = 0;
+
+	if (arg.length > 3 && arg[2] === 0) {
+		
+		arrIncrease(arg.length - 3, arr, arg);
+		
+		for(var i = arg[1]+1; i < (arg[1] + arg.length-2); i++) {
+			arr[i] = arg[k]
+
+			k++			
+		}
+
+		
+	} else if (arg.length > 3 && arg[2] < arg.length - 3) {
+		
+		argReplace(arr, arg);
+
+		j = arg.length - 3 - arg[2];
+
+		while (j > 0) {
+
+			for (m = arr.length; m >= arg[1]+arg[2]; m--) {
+				
+				arr[m] = arr[m-1]; 
+			}
+
+			j--;
+		}
+
+
+		for(var i = arg[1]+arg[2]; i < (arg[1]+arg.length-3); i++){
+			
+			arr[i] = arg[3+arg[2] + p]
+
+			p++;
+		}
+
+	} else if (arg.length > 3) {
+		argReplace(arr, arg);
+	} 
+
+	return arr;
+}
+
+function splice() {
+	
+	var arr = arguments[0],
+		arrSpliced = arrSplice(arguments, arr);
+	
+	elRemove(arr, arrSpliced); 
+
+	addArguments(arguments, arr);
+
+	arrTransform(arr);
+	
 	return arrSpliced;
 	
 } 
 
-console.log(splice(array, 3,5, 'hello', 'Vanya'));
+console.log(splice(array,2,3, "Hello", "world"));
+
+console.log('array=' + array)
