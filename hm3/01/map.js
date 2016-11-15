@@ -6,13 +6,15 @@ let array = [1, 2, 3, 4, 5, 6],
 let map = (arr, callback) => {
 	for (var i = 0; i < arr.length; i++) {
 		
-		res[i] = callback(arr[i]);
+		res[i] = callback(arr[i], i, arr);
 	}
 
 	return res;
 }
 
-let square = map(array, function(item){
+let square = map(array, function(item, index, arr){
+	console.log(index);
+	
 	return item*item
 });
 
