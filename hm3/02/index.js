@@ -71,8 +71,6 @@ function compareLink(a,b) {
 }
 
 function compareProp(a,b) {
-    var a = Object.getOwnPropertyNames(a),
-        b = Object.getOwnPropertyNames(b);
 
    for (var propA of a) {
 
@@ -92,7 +90,7 @@ function compareProp(a,b) {
 }
 
 function  compareVal(a,b) {
-
+    
     for (var propA in a) {
 
         for (var propB in b) {
@@ -100,11 +98,16 @@ function  compareVal(a,b) {
             if (b[propB] === a[propA]) {
                 console.log(b[propB]+ ' = '+ a[propA]);
                 break;
+            } else {
+                if (compareSubProp(a,b)) {
+                    
+                    break;
+                }
             }
     
         }
 
-        if (b[propB] !== a[propA]) return false
+        //if (b[propB] !== a[propA]) return false
     }
 
     return true
@@ -112,21 +115,37 @@ function  compareVal(a,b) {
 
 function compareSubProp(a,b) {
 
-    for (var propA in a) {
-       
-        for(var sub in propA) {
-            console.log(sub)
-        }
+    for (var propA in a) {   
+       if(typeof a[propA] === 'object') {
+        console.log(a[propA])
+        var a1 = Object.keys(a[propA]);
+        console.log('a1= '+ a1);      
+       }
     }
+
+    for (var propB in b) {   
+       if(typeof b[propB] === 'object') {
+        console.log(a[propA])
+        var b1 = Object.keys(b[propB]);
+        console.log('b1= '+b1);      
+       }
+    }
+
+    if(compareProp(a1,b1)) return true;
+
+    return false
 }
 
 function deepEqual(a, b) {
+
+    var aProp = Object.getOwnPropertyNames(a),
+        bProp = Object.getOwnPropertyNames(b);
 
     if (compareLink(a,b)) {
         return true
     }
 
-    if (compareProp(a,b)) {
+    if (compareProp(aProp,bProp)) {
         if (compareVal(a,b)) {
            return true
         }
