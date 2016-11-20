@@ -1,76 +1,36 @@
 'use strict';
 
-(function(){
-	var elems = document.getElementsByClassName('header');
+let accordeon = document.querySelector('.accordeon'),
+	current;
 
-	accordeon.onclick =  function(e) {
+accordeon.addEventListener('click', function(e){
 
-		var target = e.target,
-			btns = document.getElementsByClassName('header'),
-			lists = document.getElementsByClassName('inside'),
-			triangle = target.firstElementChild.firstElementChild,
-			triangleDown = target.firstElementChild.lastElementChild,
-			triangles = document.getElementsByClassName('polygon-up'),
-			trianglesDown = document.getElementsByClassName('polygon-down'),
-			list = target.nextSibling.nextSibling,
-			start = Date.now();
+	var target = e.target,
+		list = target.nextElementSibling,
+		svgUp = target.children[0].children[0],
+		svgDown = target.children[0].children[1];
 
-		if ((target.getAttribute('class') === 'header') || 
-			(target.getAttribute('class') === 'header gray')) {
+	if (target.classList.contains('header')){
+		
+		if (!target.classList.contains('active')) {
+			target.classList.add('active');
+			list.classList.add('activeList');
+			svgUp.style.display = 'block';
+			svgDown.style.display = 'none';
 
-			for (var i = 0; i < btns.length; i++) {
-
-				btns[i].id = '';
-				triangles[i].style.display = 'none';
-				trianglesDown[i].style.display = 'block';
-			};
-
-			target.id = 'active';
-			triangleDown.style.display = 'none';
-			triangle.style.display = 'block';
-
-			var timer = setInterval(function() {
-
-				var timePassed = Date.now() - start;
-
-				slideUp(timePassed);
-
-				slide(timePassed);
-
-				if (timePassed >= 500) {
-					clearInterval(timer);
-					return;
-				}
-
-			}, 20);
-
-			function slide(timePassed) {
-
-				list.style.height = timePassed / 5 + 'px';
+			if (current) {
+				current.classList.remove('active');
+				current.nextElementSibling.classList.remove('activeList');
+				current.children[0].children[0].style.display = 'none';
+				current.children[0].children[1].style.display = 'block';
 			}
 
-			function slideUp(timePassed) {
-
-		    	for (var j = 0; j < lists.length; j++) {
-		    		if (lists[j].id === 'before') {
-
-		    			lists[j].style.height = 100 - timePassed / 5 + 'px';
-		    		
-		    		}
-		    	}            	
-	    	}
-
-	    	function removeId() {
-			    
-		    	for (var j = 0; j < lists.length; j++) {
-		    		lists[j].id = '';
-		    	}	
-	    	}
-
-			list.id = 'before';
+			current = e.target;
+		} else {
+			target.classList.remove('active');
+			list.classList.remove('activeList');
+			svgUp.style.display = 'none';
+			svgDown.style.display = 'block';
 		}
-
 	}
-		
-
-})();
+})

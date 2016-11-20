@@ -104,10 +104,11 @@ ul {
 	display: none;
 }
 .inside {
-	/*display: none;*/
 	height: 0;
 
 	overflow: hidden;
+
+	transition: .5s;
 }
 
 .inside__list {
@@ -133,12 +134,14 @@ li.inside__item:last-child {
 }
 
 
-#active {
+.active {
 	background: #ff8663;
 
 	color: #fff;
 }
 
-#insideActive {
-	display: block;	
+.activeList {
+	height: 100px;
 }
+
+
