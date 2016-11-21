@@ -16,11 +16,27 @@
 					color += letters[Math.round(Math.random()*15)];
 				}
 				return color;
+			},
+			randomHeight = () => {
+				var height = Math.round(Math.random()*250);
+				return (height <= 250 && height >= 50) ? height : 250;
+			},
+			randomWidth = () => {
+				var width = Math.round(Math.random()*350);
+				return (width <= 350 && width >= 100) ? width : 350;
+			},
+			randomTop = (height) => {
+				return Math.round(Math.random()*(wrapper.clientHeight - height));
+			},
+			randomLeft = (width) => {
+				return Math.round(Math.random()*(wrapper.clientWidth - width));
 			}
 
 			div.style.position = 'absolute';
-			div.style.height = '50px';
-			div.style.width = '100px';
+			div.style.height = randomHeight() + 'px';
+			div.style.width = randomWidth() + 'px';
+			div.style.top = randomTop(randomHeight()) + 'px';
+			div.style.left = randomLeft(randomWidth())  + 'px';
 			div.style.background = randomColor();
 			div.style.cursor = 'pointer';
 
