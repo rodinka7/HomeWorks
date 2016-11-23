@@ -22,19 +22,21 @@ promise1.then(function(){
 		input = document.querySelector('input');
 	
 	input.addEventListener('keyup', function(e){
-		var valArr = createArr(input.value.toLowerCase());
+		var val = input.value.toLowerCase();
+		
+		document.querySelector('#container').remove();
+
+		var container = document.createElement('div');
+		container.setAttribute('id','container');
+		document.body.appendChild(container);
+
 		for (let item of str) {
-			var cityArr = createArr(item['name'].toLowerCase());
-			console.log(compareArr(valArr,cityArr));
+			var city = item['name'].toLowerCase();
+			if (city.indexOf(val) >= 0) {
+				var p = document.createElement('p');
+				p.textContent = city;
+				container.appendChild(p);
+			}
 		}
 	})
-
-
 });
-
-let createArr = (item) => {
-		return item.split('');
-	},
-	compareArr = (arr1,arr2) => {
-		
-	};
