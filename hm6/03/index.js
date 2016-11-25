@@ -18,7 +18,6 @@ promise1.then(function(){
 	return promise
 }).then(function(res){
 	var str = JSON.parse(res),
-		arr = [],
 		input = document.querySelector('input');
 	
 	input.addEventListener('keyup', function(e){
@@ -30,13 +29,15 @@ promise1.then(function(){
 		container.setAttribute('id','container');
 		document.body.appendChild(container);
 
-		for (let item of str) {
-			var city = item['name'].toLowerCase();
-			if (city.indexOf(val) >= 0) {
-				var p = document.createElement('p');
-				p.textContent = city;
-				container.appendChild(p);
-			}
-		}
+		var arr = str.map(function(item){return item.name.toLowerCase();}),
+			arrNew = arr.filter(function(item){
+				return item.indexOf(val) >= 0;
+			});
+
+		return arrNew.map(function(item){
+			var p = document.createElement('p');
+			p.textContent = item;
+			container.appendChild(p);
+		});
 	})
 });

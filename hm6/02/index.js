@@ -12,16 +12,6 @@ let	promise = new Promise(function(resolve, reject){
 
 promise.then(function(result){
 	var str = JSON.parse(result),
-		arr = [];
-
-	for (var i=0; i<str.length; i++) {
-		arr.push(str[i]['name']);
-	}
-
-	arr.sort();
-	for (var item of arr) {
-		var div = document.createElement('div');
-		div.textContent = item;
-		document.body.appendChild(div); 
-	}
+		arr = str.map(function(item){return item.name}).sort();
+	document.body.innerHTML = arr.map(function(item){return `<div>${item}</div>`;}).join('\n');
 });
