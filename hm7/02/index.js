@@ -39,23 +39,14 @@ submit.addEventListener('click', function(e){
 	let inputArr = document.querySelectorAll('input'),
 		form = document.forms.form,
 		p = new Promise(function(resolve,reject){
-			inputArr.forEach(function(item){
-				if (!item.value.length){
-					alert('Все поля формы должны быть заполнены!');
-					reject();
-				}
+			let empty = [].some.call(inputArr, function(item){
+				return !item.value.length;
 			});
-		
-			/*var empty = inputArr.some(isEmpty);
-
-			function isEmpty(item){
-				return item.value.length === '';
-			}
 
 			if(empty){
 				alert('Все поля формы должны быть заполнены!');
 				reject();
-			}*/
+			}
 
 			resolve();
 		});
