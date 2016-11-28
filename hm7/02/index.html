@@ -22,19 +22,34 @@
 			background: linear-gradient(to left bottom, #dd2525, #990303);
 			color: #fff;
 			border: none;
-			padding: 5px;
+			padding: 5px 10px;
 			border-radius: 10px;
 			cursor: pointer;
+		}
+		form {
+			text-align: center;
+			margin-bottom: 30px;
+		}
+		input {
+			padding: 10px;
+			border-radius: 10px;
+			border: 1px solid #dedede;
 		}
 	</style>
 </head>
 <body>
 	<div>
+		<form action="/submit" name="form">
+			<input type="text" name="name" placeholder="Введите имя cookie">
+			<input type="text" name="val" placeholder="Введите значение cookie">
+			<input type="text" name="expire" placeholder="Кол-во дней жизни cookie">
+			<button id="submit">Добавить</button>
+		</form>
 		<table>
 			<tbody id="table">
 				<tr>
-					<th>Name</th>
-					<th>Value</th>
+					<th>Имя</th>
+					<th>Значение</th>
 				</tr>
 			</tbody>	
 		</table>
