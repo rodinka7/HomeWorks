@@ -32,8 +32,7 @@
 			},
 			randomLeft = (width) => {
 				return Math.round(Math.random()*(wrapper.clientWidth - width));
-			}
-			
+			}			
 			div.style.position = 'absolute';
 			div.style.height = randomHeight() + 'px';
 			div.style.width = randomWidth() + 'px';
@@ -44,11 +43,10 @@
 
 			this.appendChild(div);
 
-			console.log(div.style.top)
-				console.log(div.style.left)
 			div.addEventListener('mousedown', function(e) {
 				this.onmousemove = function(e){
 					moveIt(e);
+					this.classList.add('moved');
 				};
 
 				let moveIt = (e) => {
@@ -77,16 +75,13 @@
 
 			arr.forEach(function(item){
 				obj[`figure${k}`] = {};
+				obj[`figure${k}`]['class'] = item.classList[0];
 				obj[`figure${k}`]['height'] = item.style.height;
 				obj[`figure${k}`]['width'] = item.style.width;
 				obj[`figure${k}`]['top'] = item.style.top;
 				obj[`figure${k}`]['left'] = item.style.left;
 				obj[`figure${k}`]['color'] = item.style.background;
 				k++;
-				console.log(item.style.top)
-				console.log(item.style.left)
-				console.log(item.offsetTop)
-				console.log(item.offsetLeft)
 			})
 
 			document.cookie = `cookie=${JSON.stringify(obj)}`;
@@ -99,7 +94,6 @@
 			obj = JSON.parse(cookie);
 		for (var item in obj){
 			let div = document.createElement('div');
-
 			div.style.position = 'absolute';
 			div.style.background = obj[item]['color'];
 			div.style.height = obj[item]['height'];
@@ -107,10 +101,15 @@
 			div.style.top = obj[item]['top'];
 			div.style.width = obj[item]['width'];
 			
-			wrapper.appendChild(div);
+			if (obj[item]['class'] === 'moved') {
+				div.classList.add(obj[item]['class']);
+			}
+			
+			if (div.classList.contains('moved')){
+				div.style.transform = 'translate(-50%,-50%)';
+			}
 
-			console.log(div.offsetTop)
-			console.log(div.offsetLeft)
+			wrapper.appendChild(div);
 		}
 	})
 })();
