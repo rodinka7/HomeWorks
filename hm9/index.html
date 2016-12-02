@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
+	<link href="style.css" rel="stylesheet">
+	<script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
+	<title>VK Application</title>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="container">
+			<div class="header">Выберите друзей</div>
+			<div class="search  clearfix">
+				<label for="" class="search__label">
+					<input class="search__input" type="text" placeholder="Начните вводить имя друга">
+					<i class="fa fa-search search__icon" aria-hidden="true"></i>
+				</label>
+				<label for="" class="search__label">
+					<input class="search__input" type="text" placeholder="Начните вводить имя друга">
+					<i class="fa fa-search  search__icon" aria-hidden="true"></i>
+				</label>
+			</div>
+			<div class="content clearfix">
+				<div class="content__left">
+					<div class="content__header">Ваши друзья</div>
+					<div class="content__main" id="list">
+						<script type="text/x-handlebars-template" id="friendsList">
+							<ul class="content__list">
+								{{#each list}}
+									<li class="content__list-item">	
+										<div class="content__list-wrapper"><img src="{{./photo_50}}"></div>
+										<div class="content__list-name">{{./first_name}} {{./last_name}}</div>
+										<div class="content__list-add"><span></span></div>
+									</li>
+								{{/each}}
+							</ul>
+						</script>
+					</div>
+				</div>
+				<div class="content__right">
+					<div class="content__header">Друзья в списке</div>
+					<div class="content__main">
+						
+					</div>
+				</div>	
+			</div>
+			<div class="footer  clearfix">
+				<button class="btn">Сохранить</button>
+			</div>
+		</div>
+	</div>
+	<script src="index.js"></script>
+</body>
+</html>
