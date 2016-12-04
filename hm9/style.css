@@ -4,6 +4,8 @@
 
 	padding: 0;
 	margin: 0;
+
+	user-select: none;
 }
 
 .clearfix:after {
@@ -22,7 +24,7 @@
 	justify-content: center;
 }
 .container {
-	width: 60%;
+	width: 50%;
 
 	background-color: #fff;
 	border-radius: 10px;
@@ -65,7 +67,7 @@
 }
 .search__input {
 	padding: 5px 30px;
-	width: 49%;
+	width: 100%;
 	border: none;
 	border-radius: 25px;
 }
@@ -78,21 +80,15 @@
 }
 .content__left{
 	width: 50%;
-	height: 60vh;
-
+	
 	float: left;
 
 	border-right: 1px solid #f1f1f1;
-
-	overflow: hidden;
 }
 .content__right{
 	width: 50%;
-	height: 60vh;
 
 	float: right;
-
-	overflow: hidden;
 }
 .content__header{
 	padding: 15px 5%;
@@ -120,13 +116,10 @@ ul {
 
 	width: 100%;
 }
-.content__main {
-	position: relative;
-}
-.content__list {
-	position: absolute;
-	top: 0;
-	left: 0;
+.content__wrapper {
+	overflow-x: hidden;
+	overflow-y: scroll;
+	height: 50vh;
 }
 .content__list-item {
 	padding: 10px 5%;

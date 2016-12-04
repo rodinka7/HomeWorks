@@ -13,20 +13,16 @@
 	<div class="wrapper">
 		<div class="container">
 			<div class="header">Выберите друзей</div>
-			<div class="search  clearfix">
-				<label for="" class="search__label">
-					<input class="search__input" type="text" placeholder="Начните вводить имя друга">
-					<i class="fa fa-search search__icon" aria-hidden="true"></i>
-				</label>
-				<label for="" class="search__label">
-					<input class="search__input" type="text" placeholder="Начните вводить имя друга">
-					<i class="fa fa-search  search__icon" aria-hidden="true"></i>
-				</label>
-			</div>
-			<div class="content clearfix">
+			<div class="content clearfix" id="content">
 				<div class="content__left">
+					<div class="search">
+						<label for="" class="search__label">
+							<input class="search__input" type="text" placeholder="Начните вводить имя друга">
+							<i class="fa fa-search search__icon" aria-hidden="true"></i>
+						</label>
+					</div>
 					<div class="content__header">Ваши друзья</div>
-					<div class="content__main" id="list">
+					<div class="content__wrapper">
 						<script type="text/x-handlebars-template" id="friendsList">
 							<ul class="content__list">
 								{{#each list}}
@@ -38,12 +34,34 @@
 								{{/each}}
 							</ul>
 						</script>
+						<div class="content__main" id="list">
+
+						</div>
 					</div>
 				</div>
 				<div class="content__right">
+					<div class="search">
+						<label for="" class="search__label">
+							<input class="search__input right" type="text" placeholder="Начните вводить имя друга">
+							<i class="fa fa-search  search__icon" aria-hidden="true"></i>
+						</label>
+					</div>
 					<div class="content__header">Друзья в списке</div>
-					<div class="content__main">
-						
+					<div class="content__wrapper">
+						<script type="text/x-handlebars-template" id="friendsListNew">
+							<ul class="content__list right">
+								{{#each list}}
+									<li class="content__list-item">	
+										<div class="content__list-wrapper"><img src="{{./img}}"></div>
+										<div class="content__list-name">{{./name}}</div>
+										<div class="content__list-add"><span></span></div>
+									</li>
+								{{/each}}
+							</ul>
+						</script>
+						<div class="content__main" id="listNew">
+							
+						</div>
 					</div>
 				</div>	
 			</div>

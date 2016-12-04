@@ -33,21 +33,81 @@ new Promise(function(resolve){
 }).then(function(res){
 	let script = document.getElementById('friendsList'),
 		list = document.getElementById('list'), 
+		content = document.getElementById('content'),
 		source = script.innerHTML,
 		fn = Handlebars.compile(source),
-		template = fn({list: res});
+		template = fn({list: res}),
+		obj = {},
+		i = 0;
 
 	list.innerHTML = template;
 
-	window.onscroll = function(e){
-		window.dispatchEvent(new CustomEvent('scroll'));
-		let list = document.querySelector('.content__list');
+	content.addEventListener('input', function(e){
+		var target = e.target;
+
+		if(target.classList.contains('search__input')){
+			if (target.classList.contains('right'))
+			var val = e.target.value,
+				ul = document.querySelector('.content__list'),
+				arr = res.filter(function(item){
+				return item.first_name.indexOf(val)>=0 || 
+				item.first_name.toLowerCase().indexOf(val)>=0 ||
+				item.last_name.indexOf(val)>=0 || 
+				item.last_name.toLowerCase().indexOf(val)>=0;
+			});
+
+			if(ul) list.removeChild(ul);
+	
+			template = fn({list: arr});
+			list.innerHTML = template;
+		}
+	});
+
+	content.addEventListener('mousedown', function(e){
+		var target = e.target;
+		if(target.classList.contains('content__list-item')){
+			target.onmousemove = function(e){
+				let obj = createObj(),
+					script = document.getElementById('friendsListNew'),
+					list = document.getElementById('listNew'), 
+					source = script.innerHTML,
+					fn = Handlebars.compile(source),
+					template = fn({list: obj});
+
+				list.innerHTML = template;
+
+				target.style.position = 'absolute';
+				move(e);
 
 
 
-		console.log(scroll)
 
-		//list.style.top = 
-	}
+			};
 
+			target.onmouseup = function(e){
+				this.onmousemove = null;
+			}
+		}
+		var move = (e) => {
+			target.style.top = e.clientY + 'px';
+			target.style.left = e.clientX + 'px';
+			target.style.transform = 'translate(-50%, -50%)';
+		}
+
+		var createObj = () => {
+			obj[i] = {};
+			obj[i].img = target.firstElementChild.children[0].getAttribute('src');
+			obj[i].name = target.children[1].textContent;
+
+			return obj;
+		}
+
+
+		i++;
+	});
+
+
+
+	
+	
 })
