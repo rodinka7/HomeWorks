@@ -74,9 +74,11 @@
 				};
 
 				target.onmouseup = function(e){
-					if (parseInt(target.style.left) > x) {
+					if ((parseInt(target.style.left) > x) && (!target.classList.contains('content__list-item_new'))) {
 						newList = createList(createArr(i, target), source1, list1);
 						res = deleteFriend(res, list, target, source);
+					} else if ((parseInt(target.style.left) < x) && (target.classList.contains('content__list-item_new'))) {
+						deleteAdd(target);
 					} else {
 						this.style.position = 'static';
 						this.style.transform = 'translate(0, 0)';
@@ -84,7 +86,7 @@
 					i++;
 					this.onmousemove = null;
 				}
-			};
+			}
 		};
 
 		content.addEventListener('click', function(e){
@@ -92,20 +94,10 @@
 				li = target.parentNode;
 				
 			if (target.classList.contains('content__list-add_new')) {				
-				newList = deleteFriend(newList, list1, li, source1);
-
-				let obj = {
-					uid: li.id,
-					first_name: li.children[1].textContent.split(' ')[0],
-					last_name: li.children[1].textContent.split(' ')[1],
-					photo_50: li.firstElementChild.children[0].getAttribute('src'),
-				}
-
-				res.push(obj);
-
-				res = createList(res, source, list);
+				deleteAdd(li);
 
 			} else if (target.classList.contains('content__list-add')) {
+				
 				newList = createList(createArr(i, li), source1, list1);
 				
 				res = deleteFriend(res, list, li, source);
@@ -155,6 +147,8 @@
 			
 			template = fn({list: arr});
 			list.innerHTML = template;
+
+			return arr;
 		}
 
 		let deleteFriend = (res,list,target,source) => {
@@ -170,8 +164,30 @@
 			return arr;
 		}
 
+		let deleteAdd = (target) => {
+			newList = deleteFriend(newList, list1, target, source1);
 
-		
-		
+			if(!newList.length) {
+				arr = [];
+			};
+			let obj = {
+				uid: target.id,
+				first_name: target.children[1].textContent.split(' ')[0],
+				last_name: target.children[1].textContent.split(' ')[1],
+				photo_50: target.firstElementChild.children[0].getAttribute('src'),
+			}
+
+			res.push(obj);
+
+			res = createList(res, source, list);
+		}
+
+		document.querySelector('.btn').addEventListener('click', function(e){
+			e.preventDefault();
+
+			localStorage.setItem('listLeft', JSON.stringify(res));
+			localStorage.setItem('listRight', JSON.stringify(newList));
+			console.log(localStorage)	
+		});
 	});
 })();
