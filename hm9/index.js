@@ -32,8 +32,15 @@
 				}
 			});
 		})
-	}).then(function(res){
-		let script = document.getElementById('friendsList'),
+	}).then(function(result){
+		if (localStorage.getItem('listLeft')) {
+			var a = JSON.parse(localStorage.listLeft),
+				b = JSON.parse(localStorage.listRight);
+		}
+
+		let res = a || result,
+			newList = b || [],
+			script = document.getElementById('friendsList'),
 			script1 = document.getElementById('friendsListNew'),
 			list = document.getElementById('list'), 
 			list1 = document.getElementById('listNew'), 
@@ -41,12 +48,14 @@
 			source = script.innerHTML,
 			source1 = script1.innerHTML,
 			fn = Handlebars.compile(source),
+			fn1 = Handlebars.compile(source1),
 			template = fn({list: res}),
+			template1 = fn1({list: newList}),
 			arr = [], // для создания массива в функции createArr
-			newList = [],   // для фильтрации друзей в правом списке
 			i = 0;
-
+		
 		list.innerHTML = template;
+		list1.innerHTML = template1;
 
 		content.addEventListener('input', function(e){
 			var target = e.target;
@@ -113,12 +122,12 @@
 			};
 
 		let createArr = (i, target) => {
-			arr[i] = {};
-			arr[i].photo_50 = target.firstElementChild.children[0].getAttribute('src');
-			arr[i].first_name = target.children[1].textContent.split(' ')[0];
-			arr[i].last_name = target.children[1].textContent.split(' ')[1];
-			arr[i].uid = target.id;
-			return arr;
+			newList[i] = {};
+			newList[i].photo_50 = target.firstElementChild.children[0].getAttribute('src');
+			newList[i].first_name = target.children[1].textContent.split(' ')[0];
+			newList[i].last_name = target.children[1].textContent.split(' ')[1];
+			newList[i].uid = target.id;
+			return newList;
 		};
 
 		let createList = (array, source, list) => {
@@ -135,8 +144,9 @@
 			var val = target.value,
 				source = script.innerHTML,
 				fn = Handlebars.compile(source),
-				ul = target.parentNode.parentNode.parentNode.children[2].children[1].firstElementChild,
-				arr = res.filter(function(item){
+				ul = target.parentNode.parentNode.parentNode.children[2].children[1].firstElementChild;
+			
+			res = res.filter(function(item){
 				return item.first_name.indexOf(val)>=0 || 
 				item.first_name.toLowerCase().indexOf(val)>=0 ||
 				item.last_name.indexOf(val)>=0 || 
@@ -145,31 +155,28 @@
 
 			if (ul) list.removeChild(ul);
 			
-			template = fn({list: arr});
+			template = fn({list: res});
 			list.innerHTML = template;
 
-			return arr;
+			return res;
 		}
 
 		let deleteFriend = (res,list,target,source) => {
-			let arr = res.filter(function(item){
+			res = res.filter(function(item){
 				return +item.uid !== +target.id;
 			});
 			
 			fn = Handlebars.compile(source);
 
-			template = fn({list: arr});
+			template = fn({list: res});
 			list.innerHTML = template;
 
-			return arr;
+			return res;
 		}
 
 		let deleteAdd = (target) => {
 			newList = deleteFriend(newList, list1, target, source1);
 
-			if(!newList.length) {
-				arr = [];
-			};
 			let obj = {
 				uid: target.id,
 				first_name: target.children[1].textContent.split(' ')[0],
@@ -181,13 +188,13 @@
 
 			res = createList(res, source, list);
 		}
-
 		document.querySelector('.btn').addEventListener('click', function(e){
 			e.preventDefault();
 
 			localStorage.setItem('listLeft', JSON.stringify(res));
 			localStorage.setItem('listRight', JSON.stringify(newList));
-			console.log(localStorage)	
+
+			alert('Изменения сохранены!');
 		});
 	});
 })();
