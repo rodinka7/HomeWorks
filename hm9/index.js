@@ -12,15 +12,19 @@
 				apiId: 5755700
 			});
 
-			VK.Auth.login(function(response, reject){
-				if(response.session){
-					console.log('Подключение прошло успешно!');
-					resolve(response);
-				} else {
-					console.log(new Error('Что-то пошло не так!'));
-					reject();
-				}
-			}, 2);
+			VK.Auth.getLoginStatus(function(response){
+				if (response.status !== 'connected') {
+					VK.Auth.login(function(response, reject){
+						if(response.session){
+							console.log('Подключение прошло успешно!');
+							resolve();
+						} else {
+							console.log(new Error('Что-то пошло не так!'));
+							reject();
+						}
+					}, 2);
+				} else resolve();
+			})
 		})
 	}).then(function(){
 		return new Promise(function(resolve){
@@ -51,8 +55,7 @@
 			fn1 = Handlebars.compile(source1),
 			template = fn({list: res}),
 			template1 = fn1({list: newList}),
-			arr = [], // для создания массива в функции createArr
-			i = 0;
+			i = newList.length || 0;
 		
 		list.innerHTML = template;
 		list1.innerHTML = template1;
@@ -71,11 +74,22 @@
 		});
 
 		content.onmousedown = function(e){
-			var target = e.target,
-				listRight = document.querySelector('.content__right'),
-				x = listRight.offsetLeft;
+			var listRight = document.querySelector('.content__right'),
+				x = listRight.offsetLeft,
+				target;
 
-			if (target.classList.contains('content__list-item')){
+			if ((e.target.tagName === 'IMG')) {
+				target = e.target.parentNode.parentNode;
+			} else if (e.target.classList.contains('content__list-name')) {
+				target = e.target.parentNode;
+			} else if (e.target.classList.contains('add') ||
+				e.target.classList.contains('remove') ) {
+					target = e.target.parentNode.parentNode;
+			} else if (e.target.classList.contains('content__list-item')) {
+				target = e.target;
+			}
+
+			if (target) {
 				target.onmousemove = function(e){
 					target.style.position = 'absolute';
 					target.style.zIndex = '1000';
@@ -86,13 +100,14 @@
 					if ((parseInt(target.style.left) > x) && (!target.classList.contains('content__list-item_new'))) {
 						newList = createList(createArr(i, target), source1, list1);
 						res = deleteFriend(res, list, target, source);
+						i++;
 					} else if ((parseInt(target.style.left) < x) && (target.classList.contains('content__list-item_new'))) {
 						deleteAdd(target);
+						i--;
 					} else {
 						this.style.position = 'static';
 						this.style.transform = 'translate(0, 0)';
 					}
-					i++;
 					this.onmousemove = null;
 				}
 			}
@@ -100,24 +115,22 @@
 
 		content.addEventListener('click', function(e){
 			let target = e.target;
-				li = target.parentNode;
-				
-			if (target.classList.contains('content__list-add_new')) {				
+				li = target.parentNode.parentNode;
+
+			if (target.classList.contains('remove')) {				
 				deleteAdd(li);
+				i--;
 
-			} else if (target.classList.contains('content__list-add')) {
-				
+			} else if (target.classList.contains('add')) {
 				newList = createList(createArr(i, li), source1, list1);
-				
 				res = deleteFriend(res, list, li, source);
-
 				i++;
 			}
 		});
 
 		let move = (e, target) => {
-				target.style.top = e.clientY + 'px';
-				target.style.left = e.clientX + 'px';
+				target.style.top = e.pageY + 'px';
+				target.style.left = e.pageX + 'px';
 				target.style.transform = 'translate(-50%, -50%)';
 			};
 
@@ -134,7 +147,6 @@
 			var fn = Handlebars.compile(source);
 
 			template = fn({list: array});
-
 			list.innerHTML = template;
 
 			return array;
@@ -185,15 +197,12 @@
 			}
 
 			res.push(obj);
-
 			res = createList(res, source, list);
 		}
 		document.querySelector('.btn').addEventListener('click', function(e){
 			e.preventDefault();
-
 			localStorage.setItem('listLeft', JSON.stringify(res));
 			localStorage.setItem('listRight', JSON.stringify(newList));
-
 			alert('Изменения сохранены!');
 		});
 	});
