@@ -32,7 +32,7 @@
         <button type="button" class="btn btn-default" onclick="Router.handle('friends')">Друзья</button>
         <button type="button" class="btn btn-default" onclick="Router.handle('news')">Новости</button>
         <button type="button" class="btn btn-default" onclick="Router.handle('groups')">Группы</button>
-        <button type="button" class="btn btn-default" onclick="Router.handle('photos'), Router.handle('comments')">Фото</button>
+        <button type="button" class="btn btn-default" onclick="Router.handle('photos')">Фото</button>
     </div>
     <hr>
     <div id="results"></div>
@@ -104,16 +104,20 @@
         {{#each list}}
         <div class="photo col-md-5 text-center">
             <img src="{{src}}">
+            {{#if text}}
+            <div class="title">{{comments.mess}}</div>
+            {{/if}}
+            {{#each comments.message}}
+            <div class="title">{{formatDate date}}</div>
+            <img src="{{photo}}" class="img-circle">
+            <div class="title">{{name}}</div>
+            <div class="title">{{last}}</div>
+            <div class="title">{{message}}</div>
+            <hr>
+            {{/each}}
             <div class="title">{{likes.count}} лайков</div>
             <div class="title">{{reposts.count}} репостов</div>
             <div class="title">{{comments.count}} комментариев</div>
-        </div>
-        <div class="">
-            <div class="post">
-                <b>{{formatDate date}}</b>
-                <div class="post-text">{{from_id}}</div>
-            </div>
-            <hr>
         </div>
         {{/each}}
     </div>

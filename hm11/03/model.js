@@ -25,14 +25,17 @@ var Model = {
             });
         });
     },
-    getUser: function() {
+    getUser: function(id) {
         return this.callApi('users.get', {name_case: 'gen'});
+    },
+    getUsers: function(id) {
+        return this.callApi('users.get', {user_ids: id, fields: 'photo_50'});
     },
     getMusic: function() {
         return this.callApi('audio.get', {});
     },
     getFriends: function() {
-        return this.callApi('friends.get', { fields: 'photo_100' });
+        return this.callApi('friends.get', { fields: 'photo_100, photo_50' });
     },
     getNews: function() {
         return this.callApi('newsfeed.get', { filters: 'post', count: 20 });

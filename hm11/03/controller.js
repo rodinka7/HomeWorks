@@ -21,13 +21,9 @@ var Controller = {
     },
     photosRoute: function() {
         return Model.getPhotos().then(function(photos) {
+            comments(photos);
+            console.log(photos)
             results.innerHTML = View.render('photos', {list: photos});
-        });
-    },
-    commentsRoute: function() {
-        return Model.getComments().then(function(comments) {
-            console.log(comments)
-            results.innerHTML = View.render('photos', {list: comments});
         });
     }
 };
