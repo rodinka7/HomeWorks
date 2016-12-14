@@ -25,11 +25,11 @@ new Promise(function(resolve) {
     alert('Ошибка: ' + e.message);
 });
 
-let comments = (photos) => {
+function comments(photos) {
     return new Promise(function(resolve){
         photos.forEach(function(item){
-            item.message = [];
             if (item.comments.count > 0) {
+                item.message = [];
                 return Model.getComments(item.pid).then(function(comments){
                     comments.items.forEach(function(itemComments){
                         comments.profiles.forEach(function(itemProfiles){
@@ -46,7 +46,7 @@ let comments = (photos) => {
                     })
                 });
             } else {
-                item.message.text = 'К этому фото нет комментариев!';
+                item.message = 'К этому фото нет комментариев!';
             }
         });
         resolve(photos);

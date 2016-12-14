@@ -12,6 +12,12 @@
             float: left;
             margin: 15px;
         }
+        .group {
+            margin: 15px;
+            width: 20%;
+            display: inline-block;
+            vertical-align: top;
+        }
     </style>
 </head>
 <body>
@@ -79,9 +85,9 @@
 </script>
 
 <script type="text/x-handlebars-template" id="groupsTemplate">
-    <div class="groups row">
+    <div class="groups">
         {{#each list}}
-        <div class="text-center col-md-2">
+        <div class="group text-center">
             <img src="{{photo}}" class="img-circle">
             <div class="title">{{name}}</div>
         </div>

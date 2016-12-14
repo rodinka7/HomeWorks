@@ -4,14 +4,19 @@ var Model = {
             VK.init({
                 apiId: appId
             });
-            
-            VK.Auth.login(function(response) {
-                if (response.session) {
+            VK.Auth.getLoginStatus(function(response){
+                if(response.status === 'connected') {
                     resolve(response);
                 } else {
-                    reject(new Error('Не удалось авторизоваться'));
+                    VK.Auth.login(function(response) {
+                        if (response.session) {
+                            resolve(response);
+                        } else {
+                            reject(new Error('Не удалось авторизоваться'));
+                        }
+                    }, perms);  
                 }
-            }, perms);              
+            })            
         });
     },
     callApi: function(method, params) {
