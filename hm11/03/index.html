@@ -104,15 +104,12 @@
         {{#each list}}
         <div class="photo col-md-5 text-center">
             <img src="{{src}}">
-            {{#if text}}
-            <div class="title">{{comments.mess}}</div>
-            {{/if}}
-            {{#each comments.message}}
-            <div class="title">{{formatDate date}}</div>
-            <img src="{{photo}}" class="img-circle">
-            <div class="title">{{name}}</div>
-            <div class="title">{{last}}</div>
-            <div class="title">{{message}}</div>
+            {{#each message}}
+            <div class="title">{{./date}}</div>
+            <img src="{{./photo}}" class="img-circle">
+            <div class="title">{{./name}}</div>
+            <div class="title">{{./last}}</div>
+            <div class="title">{{./text}}</div>
             <hr>
             {{/each}}
             <div class="title">{{likes.count}} лайков</div>

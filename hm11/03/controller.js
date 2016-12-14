@@ -21,9 +21,9 @@ var Controller = {
     },
     photosRoute: function() {
         return Model.getPhotos().then(function(photos) {
-            comments(photos);
-            console.log(photos)
-            results.innerHTML = View.render('photos', {list: photos});
+            return comments(photos).then(function(photos){
+                results.innerHTML = View.render('photos', {list: photos});
+            })
         });
     }
 };

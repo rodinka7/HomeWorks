@@ -25,11 +25,8 @@ var Model = {
             });
         });
     },
-    getUser: function(id) {
+    getUser: function() {
         return this.callApi('users.get', {name_case: 'gen'});
-    },
-    getUsers: function(id) {
-        return this.callApi('users.get', {user_ids: id, fields: 'photo_50'});
     },
     getMusic: function() {
         return this.callApi('audio.get', {});
@@ -46,7 +43,7 @@ var Model = {
     getPhotos: function() {
         return this.callApi('photos.get', {album_id: 'profile', extended: 1});
     },
-    getComments: function() {
-        return this.callApi('photos.getAllComments', {});
+    getComments: function(id) {
+        return this.callApi('photos.getComments', {photo_id: id, extended: 1, v: 5.0});
     }
 };
