@@ -116,10 +116,10 @@
                 <div class="h3 comment">{{likes.count}} лайков</div>
                 <div class="h3 comment">{{reposts.count}} репостов</div>
                 <div class="h3 comment">{{comments.count}} комментария</div>
-                {{#each message}}
+                {{#each comments.items}}
                 <div class="title">{{formatDate date}}</div>
                 <img src="{{photo}}" class="img-circle">
-                <div class="title">{{name}} {{last}}</div>
+                <div class="title">{{first_name}} {{last_name}}</div>
                 <div class="title">{{text}}</div>
                 <hr>
                 {{/each}}

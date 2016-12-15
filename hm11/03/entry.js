@@ -26,29 +26,18 @@ new Promise(function(resolve) {
 });
 
 function comments(photos) {
-    return new Promise(function(resolve){
-        photos.forEach(function(item){
-            if (item.comments.count > 0) {
-                item.message = [];
+    let photosObj = {};
+    photos.forEach(item => {
+      photosObj[item.pid] = item;
+    })
+    return Promise.all(
+        photos.filter(item => item.comments.count).map(function(item){
                 return Model.getComments(item.pid).then(function(comments){
-                    comments.items.forEach(function(itemComments){
-                        comments.profiles.forEach(function(itemProfiles){
-                            if (itemComments.from_id === itemProfiles.id){
-                                var arr = [];
-                                arr.date = itemComments.date;
-                                arr.text = itemComments.text;
-                                arr.name = itemProfiles.first_name;
-                                arr.last = itemProfiles.last_name;
-                                arr.photo = itemProfiles.photo;
-                                item.message.push(arr);
-                            }
-                        })
-                    })
+                    photosObj[item.pid].comments = comments;
                 });
-            } else {
-                item.message = 'К этому фото нет комментариев!';
-            }
-        });
-        resolve(photos);
+        })
+    ).then(() => {
+      console.log(photosObj);
+      return photosObj;
     });
 };
