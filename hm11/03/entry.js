@@ -25,19 +25,37 @@ new Promise(function(resolve) {
     alert('Ошибка: ' + e.message);
 });
 
-function comments(photos) {
+let comments = (photos) => {
     let photosObj = {};
     photos.forEach(item => {
       photosObj[item.pid] = item;
     })
+
     return Promise.all(
         photos.filter(item => item.comments.count).map(function(item){
-                return Model.getComments(item.pid).then(function(comments){
-                    photosObj[item.pid].comments = comments;
-                });
+            return Model.getComments(item.pid).then(function(comments){
+                photosObj[item.pid].comments = comments;
+            });
         })
     ).then(() => {
-      console.log(photosObj);
-      return photosObj;
+        for (let item in photosObj){
+            let comments = photosObj[item].comments;
+
+            if (!comments.count) {
+                photosObj[item].text = 'К этому фото нет комментариев!';
+            } else {
+                comments.items.forEach(function(itemItem){
+                    comments.profiles.forEach(function(itemProfile){
+                        if (itemItem.from_id === itemProfile.id) {
+                            itemItem.first_name = itemProfile.first_name;
+                            itemItem.last_name = itemProfile.last_name;
+                            itemItem.photo = itemProfile.photo;
+                        }
+                    })    
+                })
+            }
+        }
+        console.log(photosObj)
+        return photosObj; 
     });
 };
