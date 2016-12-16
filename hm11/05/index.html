@@ -135,20 +135,21 @@
             <div class="h4">Сортировка по</div>
             <div class="form-group">
                 <label for="comments" class="sr-only"></label>
-                <input type="text" class="form-control input" id="comments" placeholder="Количеству комментариев">
+                <input type="text" class="form-control" name="comments" id="comments" placeholder="Количеству комментариев">
             </div>
             <div class="form-group">
                 <label for="likes" class="sr-only"></label>
-                <input type="text" class="form-control input" id="likes" placeholder="Количеству лайков">
+                <input type="text" class="form-control" name="likes" id="likes" placeholder="Количеству лайков">
             </div>
             <div class="form-group">
                 <label for="reposts" class="sr-only"></label>
-                <input type="text" class="form-control input" id="reposts" placeholder="Количеству репостов">
+                <input type="text" class="form-control" name="reposts" id="reposts" placeholder="Количеству репостов">
             </div>
             <div class="form-group">
                 <label for="date" class="sr-only"></label>
-                <input type="text" class="form-control input" id="date" placeholder="Дате добавления">
+                <input type="text" class="form-control" name="date" id="date" placeholder="Дате добавления dd.MM.YYYY">
             </div>
+            <button class="btn btn-default button">Отсортировать</button>
         </form>
         <hr>
         {{#each list}}

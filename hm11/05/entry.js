@@ -55,64 +55,82 @@ let comments = (photos) => {
                 })
             }
         }
-        results.addEventListener('input', function(e){
-            if(e.target.classList.contains('input')){
-                var val = e.target.value,
-                    sort = e.target.id;
-                
-                if (sort === 'comments'){
-                    var obj = {};
-                    for (let item in photosObj){
-                        if (photosObj[item].comments.count === +val){
-                            obj[item] = photosObj[item];
-                        }
-                    }
-                     console.log(obj)
-                } else if (sort === 'likes'){
-                    var obj = {};
-                    for (let item in photosObj){
-                        if (photosObj[item].likes.count === +val){
-                            obj[item] = photosObj[item];
-                        }
-                    }
-                    photosObj = obj;
-                } else if (sort === 'reposts'){
-                    var obj = {};
-                    for (let item in photosObj){
-                        if (photosObj[item].likes.count === +val){
-                            obj[item] = photosObj[item];
-                        }
-                    }
-                    console.log(obj)
-                } else if (sort === 'date'){
-                    var regexp = /^\d{2}.\d{2}.\d{4}$/;
-                    if (regexp.test(val)) {
-                        var obj = {},
-                            valDate = val.split('.');
-
-                        for (let item in photosObj){
-                            var objDate = new Date(photosObj[item].created * 1000);
-                            if ((objDate.getDate() === +valDate[0]) &&
-                                (objDate.getMonth()+1 === +valDate[1]) &&
-                                (objDate.getFullYear() === +valDate[2])) {
-                                console.log(objDate.getDate(), objDate.getMonth()+1, objDate.getFullYear())
-                                obj[item] = photosObj[item];
-                            }
-                        }
-                        console.log(obj)
-                    }
-                }
-            }
-        });
         return photosObj; 
     });
 };
 
+let filterFn = (photosObj, sort, val) => {
+    var obj = {};
+    switch (sort) {
+        case 'comments':
+            for (let item in photosObj){
+                if (photosObj[item].comments.count === +val){
+                    obj[item] = photosObj[item];
+                }
+            }
+             return obj;
+        case 'likes':
+            for (let item in photosObj){
+                if (photosObj[item].likes.count === +val){
+                    obj[item] = photosObj[item];
+                }
+            }
+            return obj;
+        case 'reposts':
+            for (let item in photosObj){
+                if (photosObj[item].reposts.count === +val){
+                    obj[item] = photosObj[item];
+                }
+            }
+            return obj;
+        case 'date':
+            var regexp = /^\d{2}.\d{2}.\d{4}$/;
+            if (regexp.test(val)) {
+                var valDate = val.split('.');
+
+                for (let item in photosObj){
+                    var objDate = new Date(photosObj[item].created * 1000);
+                    if ((objDate.getDate() === +valDate[0]) &&
+                        (objDate.getMonth()+1 === +valDate[1]) &&
+                        (objDate.getFullYear() === +valDate[2])) {
+                        obj[item] = photosObj[item];
+                    }
+                }
+                return obj;
+            };
+
+    }
+};
 results.addEventListener('click', function(e){
     if(e.target.classList.contains('album')){
         let target = e.target;
         return Model.getPhotos(target.id).then(function(photos){
             return comments(photos).then(function(photos){
+                results.addEventListener('click', function(e){
+
+                    if (e.target.classList.contains('button')){
+                        e.preventDefault();
+                        var form = document.forms.form, 
+                            sort,
+                            val; 
+                        if (form.comments.value){
+                            sort = form.comments.id;
+                            val = form.comments.value;
+                        } else if (form.likes.value) {
+                            sort = form.likes.id;
+                            val = form.likes.value;
+                        } else if (form.reposts.value) {
+                            sort = form.reposts.id;
+                            val = form.reposts.value;
+                        } else if (form.date.value) {
+                            sort = form.date.id;
+                            val = form.date.value;
+                        };
+                        var obj = filterFn(photos, sort, val);
+                        console.log(obj)
+                        results.innerHTML = View.render('photos', {list: obj});       
+                    }
+                });
                 results.innerHTML = View.render('photos', {list: photos});
             })
         })
