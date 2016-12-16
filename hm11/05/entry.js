@@ -55,7 +55,55 @@ let comments = (photos) => {
                 })
             }
         }
-        console.log(photosObj)
+        results.addEventListener('input', function(e){
+            if(e.target.classList.contains('input')){
+                var val = e.target.value,
+                    sort = e.target.id;
+                
+                if (sort === 'comments'){
+                    var obj = {};
+                    for (let item in photosObj){
+                        if (photosObj[item].comments.count === +val){
+                            obj[item] = photosObj[item];
+                        }
+                    }
+                     console.log(obj)
+                } else if (sort === 'likes'){
+                    var obj = {};
+                    for (let item in photosObj){
+                        if (photosObj[item].likes.count === +val){
+                            obj[item] = photosObj[item];
+                        }
+                    }
+                    photosObj = obj;
+                } else if (sort === 'reposts'){
+                    var obj = {};
+                    for (let item in photosObj){
+                        if (photosObj[item].likes.count === +val){
+                            obj[item] = photosObj[item];
+                        }
+                    }
+                    console.log(obj)
+                } else if (sort === 'date'){
+                    var regexp = /^\d{2}.\d{2}.\d{4}$/;
+                    if (regexp.test(val)) {
+                        var obj = {},
+                            valDate = val.split('.');
+
+                        for (let item in photosObj){
+                            var objDate = new Date(photosObj[item].created * 1000);
+                            if ((objDate.getDate() === +valDate[0]) &&
+                                (objDate.getMonth()+1 === +valDate[1]) &&
+                                (objDate.getFullYear() === +valDate[2])) {
+                                console.log(objDate.getDate(), objDate.getMonth()+1, objDate.getFullYear())
+                                obj[item] = photosObj[item];
+                            }
+                        }
+                        console.log(obj)
+                    }
+                }
+            }
+        });
         return photosObj; 
     });
 };
@@ -69,4 +117,4 @@ results.addEventListener('click', function(e){
             })
         })
     }
-})
+});
