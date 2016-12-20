@@ -55,6 +55,7 @@ let comments = (photos) => {
                 })
             }
         }
+        localStorage.object = JSON.stringify(photosObj);
         return photosObj; 
     });
 };
@@ -101,14 +102,54 @@ let filterFn = (photosObj, sort, val) => {
 
     }
 };
+
+let sortFn = (val) => {
+    let obj = JSON.parse(localStorage.object),
+    arr = [];
+   
+    for (let item in obj) {
+        arr.push(obj[item]);
+    }
+    switch (val) {
+        case 'comments':
+            arr.sort(function(a,b){
+                return b.comments.count - a.comments.count;
+            });   
+        case 'likes':
+            arr.sort(function(a,b){
+                return b.likes.count - a.likes.count;
+            });
+        case 'reposts':
+            arr.sort(function(a,b){
+                return b.reposts.count - a.reposts.count;
+            });
+        case 'date':
+    }
+    console.log(arr)
+    return arr;
+};
+
 results.addEventListener('click', function(e){
     if(e.target.classList.contains('album')){
         let target = e.target;
         return Model.getPhotos(target.id).then(function(photos){
             return comments(photos).then(function(photos){
-                results.addEventListener('click', function(e){
+                results.innerHTML = View.render('photos', {list: photos});
+            })
+        })
+    }
+});
 
-                    if (e.target.classList.contains('button')){
+results.addEventListener('change', function(e){
+    var val = e.target.value;
+    sortFn(val).then(function(photos){
+        console.log(photos)
+        innerDiv.innerHTML = View.render('photos', {list: photos});
+    })
+    /*return sortFn(val).then(function(photos){
+        results.innerHTML = View.render('photos', {list: photos});
+    })*/     
+                    /*if (e.target.classList.contains('button')){
                         e.preventDefault();
                         var form = document.forms.form, 
                             sort,
@@ -129,10 +170,5 @@ results.addEventListener('click', function(e){
                         var obj = filterFn(photos, sort, val);
                         console.log(obj)
                         results.innerHTML = View.render('photos', {list: obj});       
-                    }
-                });
-                results.innerHTML = View.render('photos', {list: photos});
-            })
-        })
-    }
+                    }*/
 });
