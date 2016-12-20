@@ -131,8 +131,8 @@
 <script type="text/x-handlebars-template" id="photosTemplate">
     <div>
         <form id="form">
-            Сортировка по:
             <select class="form-control">
+                <option>Сортировка по:</option>
                 <option value="comments">Количеству комментариев</option>
                 <option value="likes">Количеству лайков</option>
                 <option value="reposts">Количеству репостов</option>
@@ -140,8 +140,38 @@
             </select>
         </form>
         <hr>
+        <div id="innerDiv">
+            {{#each list}}
+            <div class="row comment text-center">
+                <img src="{{src_big}}" class="float">
+                <div>
+                    {{#if text}}
+                    <div class="h2 comment">{{text}}</div>
+                    <div class="h3 comment">{{likes.count}} лайков</div>
+                    <div class="h3 comment">{{reposts.count}} репостов</div>
+                    {{else}}
+                    <div class="h3 comment">{{likes.count}} лайков</div>
+                    <div class="h3 comment">{{reposts.count}} репостов</div>
+                    <div class="h3 comment">{{comments.count}} комментария:</div>
+                    {{#each comments.items}}
+                    <div class="comment">{{formatDate date}}</div>
+                    <img src="{{photo}}" class="img-circle">
+                    <div class="h5">{{first_name}} {{last_name}}</div>
+                    <div class="h4 comment">{{text}}</div>
+                    <hr>
+                    {{/each}}
+                    {{/if}}
+                </div>
+            </div>
+            {{/each}}
+        </div>   
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="sortTemplate">
+    <div>
         {{#each list}}
-        <div class="row comment text-center" id="innerDiv">
+        <div class="row comment text-center">
             <img src="{{src_big}}" class="float">
             <div>
                 {{#if text}}
