@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans&subset=cyrillic');
 body {
 	padding: 0;
 	margin: 0;
 
-	font-family: 'Fira Sans', sans-serif;
+	font-family: 'FiraSans', sans-serif;
 }
 .clearfix:after {
 	content: '';
@@ -18,8 +19,6 @@ body {
 }
 .popup {
 	position: absolute;
-	top: 0;
-	left: 0;
 
 	z-index: 100;
 	width: 380px;
@@ -29,6 +28,8 @@ body {
 	overflow: hidden;
 
 	background: #fff;
+
+	display: none;
 }
 .popup__header {
 	height: 40px;

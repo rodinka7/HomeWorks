@@ -1,0 +1,26 @@
+{
+  "defaultPage": "index.html",
+  "page404": "404.html",
+  "mime": {
+    ".html": {
+      "type": "text/html",
+      "encoding": "utf-8"
+    },
+    ".css": {
+      "type": "text/css",
+      "encoding": "utf-8"
+    },
+    ".js": {
+      "type": "application/javascript",
+      "encoding": "utf-8"
+    },
+    ".jpg": {
+      "type": "image/jpeg",
+      "encoding": ""
+    },
+    ".json": {
+      "type": "application/json",
+      "encoding": "utf-8"
+    }
+  }
+}
