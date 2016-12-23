@@ -121,11 +121,43 @@
 		btn.addEventListener('click', function(e){
 			e.preventDefault();
 			
-			let formdata = new FormData(document.forms.form),
-				xhr = new XMLHttpRequest();
+			let formdata = {},
+				elements = document.forms.form.elements;
+
+			[].forEach.call(elements, function(item){
+				if(item.value.length){
+					formdata[item.name] = item.value;
+				}
+			});
+			formdata.date = new Date();
 			
-			xhr.open('POST','../post.json');
-			xhr.send(formdata);
+			let	xhr = new XMLHttpRequest();
+			xhr.open('POST','../post.json');	
+			
+			let p = new Promise(function(resolve, reject){
+		
+				xhr.send(JSON.stringify(formdata));
+				
+				xhr.onload = function() {
+				  	resolve(xhr.response)
+				}
+
+
+			
+			})
+
+			p.then(function(res){
+				let result = JSON.parse(res);
+
+				let source = review.innerHTML,
+					source2 = place.innerHTML,
+					fn = Handlebars.compile(source),
+					fn2 = Handlebars.compile(source2);
+				
+				document.querySelector('.popup__main-reviews').innerHTML = fn(result); 
+				document.querySelector('.popup__header-text').innerHTML = fn2(result); 
+				
+			});
 		})
 
 	};

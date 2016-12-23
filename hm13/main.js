@@ -36,7 +36,7 @@ var server = http.createServer(function(req, res) {
         });
 
     req.on('data', function(data){
-        utils.writeFile(target, data, encoding)
+        utils.writeFile(target, data)
             .then(content => {
                 res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);
                 res.writeHead(code);
