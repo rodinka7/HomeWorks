@@ -12,9 +12,11 @@ module.exports = {
             });
         });
     },
-    writeFile(fileName, data) {
+    appendFile(fileName, data, encoding) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(fileName, data, function(error, content) {
+            console.log(JSON.parse(data))
+            
+            fs.appendFile(fileName, data, encoding, function(error, content) {
                 if (error) {
                     reject(error);
                 } else {

@@ -131,22 +131,28 @@
 			});
 			formdata.date = new Date();
 			
-			let	xhr = new XMLHttpRequest();
-			xhr.open('POST','../post.json');	
-			
-			let p = new Promise(function(resolve, reject){
-		
-				xhr.send(JSON.stringify(formdata));
+			return new Promise(function(resolve, reject){
 				
-				xhr.onload = function() {
-				  	resolve(xhr.response)
+				let	xhr = new XMLHttpRequest();
+				
+				xhr.open('POST','/');
+				xhr.send(JSON.stringify(formdata));	
+				
+				xhr.onreadystatechange = function(e){
+					if (xhr.readyState === 4){
+						resolve(xhr.response);
+					}
 				}
-
-
-			
-			})
-
-			p.then(function(res){
+			}).then(function(res){
+				return new Promise(function(resolve){
+					let xhr = new XMLHttpRequest();
+					xhr.open('GET','post.json');
+					xhr.send();
+					xhr.onload = function(){
+						resolve(xhr.response);
+					}
+				})			
+			}).then(function(res){
 				let result = JSON.parse(res);
 
 				let source = review.innerHTML,
@@ -156,8 +162,7 @@
 				
 				document.querySelector('.popup__main-reviews').innerHTML = fn(result); 
 				document.querySelector('.popup__header-text').innerHTML = fn2(result); 
-				
-			});
+			})
 		})
 
 	};

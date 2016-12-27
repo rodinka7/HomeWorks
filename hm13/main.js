@@ -35,16 +35,18 @@ var server = http.createServer(function(req, res) {
             res.end();
         });
 
-    req.on('data', function(data){
-        utils.writeFile(target, data)
-            .then(content => {
-                res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);
-                res.writeHead(code);
-                res.write(content);
-                res.end();
-            });
+    if (req.method === 'POST') {
+        req.on('data', function(data){
+            utils.appendFile(`./public/${config.post}`, data, encoding)
+                .then(content => {
+                    res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);
+                    res.writeHead(code);
+                    res.write(content);
+                    res.end();
+                });
 
-    });
+        });
+    };
 });
 
 server.listen(8888);
