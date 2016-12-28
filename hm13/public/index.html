@@ -17,7 +17,9 @@
 					<span class="popup__header-inner">
 						<i class="fa fa-map-marker popup__header-marker" aria-hidden="true"></i>
 						<script type="text/x-handlebars-template" id="place">
+							{{#each list}}
 							<span>{{place}}</span>
+							{{/each}}
 						</script>
 						
 						<span class="popup__header-text">
@@ -31,12 +33,14 @@
 						Пока отзывов нет ...
 					</div>
 					<script type="text/x-handlebars-template" id="review">
+						{{#each list}}
 						<div class="popup__main-review">
 							<span class="popup__main-name">{{name}}</span>
 							<span class="popup__main-place">{{place}}</span>
 							<span class="popup__main-date">{{date}}</span>
 							<div class="popup__main-text">{{message}}</div>
 						</div>
+						{{/each}}
 					</script>
 					<div class="popup__main-add clearfix">
 						<div class="popup__main-add-header">ВАШ ОТЗЫВ</div>

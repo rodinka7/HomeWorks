@@ -27,6 +27,10 @@ var server = http.createServer(function(req, res) {
     var mimeType = config.mime[ext].type;
     var encoding = config.mime[ext].encoding;
 
+    fs.readFileSync(`./public/${config.post}`, encoding, function(error, content){
+
+    });
+
     utils.readFile(target, encoding)
         .then(content => {
             res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);
@@ -37,7 +41,7 @@ var server = http.createServer(function(req, res) {
 
     if (req.method === 'POST') {
         req.on('data', function(data){
-            utils.appendFile(`./public/${config.post}`, data, encoding)
+            utils.writeFile(`./public/${config.post}`, data, encoding)
                 .then(content => {
                     res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);
                     res.writeHead(code);
