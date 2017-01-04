@@ -1,6 +1,10 @@
+let balloon = require('./common.js'),
+	start = require('./start.js');
+
 module.exports = function(){
 	let myMap,
-		myPlacemark;
+		myPlacemark,
+		result = [];
 
 	ymaps.ready(init);
 
@@ -12,35 +16,37 @@ module.exports = function(){
 		}, {
 			searchControlProvider: 'yandex#search'
 		});
-		
+
+		start().then((res) => {
+			if(res.length){
+				result = JSON.parse(res)
+
+				result.forEach((item) => {
+					myPlacemark = createPlacemark(item.coords, result.count, item.place);
+					myMap.geoObjects.add(myPlacemark);
+				});
+			}
+		});
+
 		myMap.events.add('click', function(e){
 			let coords = e.get('coords');
 
-			myPlacemark = createPlacemark(coords);
-			myMap.geoObjects.add(myPlacemark);
+			console.log(coords)
+			balloon(coords).then((res) => {
+				result = JSON.parse(res);
 
-            getAddress(coords);
+				myPlacemark = createPlacemark(coords, result.length, res[0].place);
+				myMap.geoObjects.add(myPlacemark);
+			});
 		});
 
-		function createPlacemark(coords) {
+		function createPlacemark(coords, count, place) {
 	        return new ymaps.Placemark(coords, {
-	            iconColor: '#ff8663'
+	            iconColor: '#ff8663',
+	            iconContent: count,
+	            hintContent: place
         	});
 	    };
-
-	    function getAddress(coords) {
-	        myPlacemark.properties.set('iconCaption', 'поиск...');
-	        ymaps.geocode(coords).then(function (res) {
-	            var firstGeoObject = res.geoObjects.get(0);
-
-	            myPlacemark.properties
-	                .set({
-	                    iconCaption: firstGeoObject.properties.get('name'),
-	                    balloonContent: firstGeoObject.properties.get('text')
-	                });
-        	});
-    	}
-        
 
 	}
 };
