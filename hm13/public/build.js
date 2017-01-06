@@ -44,23 +44,23 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var map = __webpack_require__(1),
-		common = __webpack_require__(2);
+	var map = __webpack_require__(1);
 
 	map();
-	common();
 
 /***/ },
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	let balloon = __webpack_require__(2),
-		start = __webpack_require__(4);
+	let balloon = __webpack_require__(3),
+		onsubmit = __webpack_require__(4),
+		start = __webpack_require__(5);
 
 	module.exports = function(){
 		let myMap,
 			myPlacemark,
-			result = [];
+			result = [],
+			element;
 
 		ymaps.ready(init);
 
@@ -78,40 +78,85 @@
 					result = JSON.parse(res)
 
 					result.forEach((item) => {
-						myPlacemark = createPlacemark(item.coords, result.count, item.place);
+						myPlacemark = createPlacemark(item.coords, result.length, item.place);
 						myMap.geoObjects.add(myPlacemark);
 					});
 				}
 			});
 
 			myMap.events.add('click', function(e){
-				let coords = e.get('coords');
+				coords = e.get('coords');
+				
+				result = JSON.parse(res);
 
-				console.log(coords)
-				balloon(coords).then((res) => {
-					result = JSON.parse(res);
-
-					myPlacemark = createPlacemark(coords, result.length, res[0].place);
-					myMap.geoObjects.add(myPlacemark);
-				});
+				myPlacemark = balloon(coords, myMap, result.length, result[0].place);
+				myPlacemark.balloon.open();
+				myMap.geoObjects.add(myPlacemark);
+				
 			});
-
-			function createPlacemark(coords, count, place) {
-		        return new ymaps.Placemark(coords, {
-		            iconColor: '#ff8663',
-		            iconContent: count,
-		            hintContent: place
-	        	});
-		    };
 
 		}
 	};
 
 /***/ },
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ function(module, exports) {
 
-	module.exports = function(coords){
+	module.exports = function(coords, myMap, count, place){
+	    return new ymaps.Placemark(coords, {
+	        balloonContentBody: [
+	            `<div class="popup__header">
+	                <span class="popup__header-inner">
+	                    <i class="fa fa-map-marker popup__header-marker" aria-hidden="true"></i>
+	                    <script type="text/x-handlebars-template" id="place">
+	                        {{#each list}}
+	                        <span>{{place}}</span>
+	                        {{/each}}
+	                    </script>
+	                    
+	                    <span class="popup__header-text">
+
+	                    </span>
+	                </span>
+	            </div>
+	            <div class="popup__main">
+	                <div class="popup__main-reviews">
+	                    Пока отзывов нет ...
+	                </div>
+	                <script type="text/x-handlebars-template" id="review">
+	                    {{#each list}}
+	                    <div class="popup__main-review">
+	                        <span class="popup__main-name">{{name}}</span>
+	                        <span class="popup__main-place">{{place}}</span>
+	                        <span class="popup__main-date">{{date}}</span>
+	                        <div class="popup__main-text">{{message}}</div>
+	                    </div>
+	                    {{/each}}
+	                </script>
+	                <div class="popup__main-add clearfix">
+	                    <div class="popup__main-add-header">ВАШ ОТЗЫВ</div>
+	                    <form name="form" method="POST">
+	                        <input type="text" name="name" placeholder="Ваше имя" class="popup__input">
+	                        <input type="text" name="place" placeholder="Укажите место" class="popup__input">
+	                        <textarea name="message" placeholder="Поделитесь впечатлениями" class="popup__textarea"></textarea>
+	                        <button class="btn" id="btn">Добавить</button>
+	                    </form>
+	                </div>
+	            </div>`
+	        ].join('')
+	    }, {
+	        iconColor: '#ff8663',
+	        iconContent: count,
+	        hintContent: place
+	    });
+	};
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	module.exports = function(){
 		return new Promise(function(resolve){
 			let result = [];
 
@@ -137,18 +182,6 @@
 				document.querySelector('.popup__main-reviews').innerHTML = fn({list: result}); 
 				document.querySelector('.popup__header-text').innerHTML = fn2({list: result}); 
 			};
-			
-			map.addEventListener('click', function(e){
-				if (e.target.tagName === 'YMAPS') {
-					popup.style.display = 'block';
-					popup.style.left = e.pageX + 'px';
-					popup.style.top = e.pageY + 'px';
-				}
-
-				if (e.target.classList.contains('popup__header-close')){
-					popup.style.display = 'none';
-				}
-			});
 
 			btn.addEventListener('click', function(e){
 				e.preventDefault();
@@ -162,12 +195,10 @@
 					}
 				});
 
-				formdata.coords = coords;
 				formdata.date = new Date();
 				
 				result.push(formdata);
 				
-				console.log(result)
 				return new Promise(function(resolve, reject){
 					
 					let	xhr = new XMLHttpRequest();
@@ -192,8 +223,7 @@
 	};
 
 /***/ },
-/* 3 */,
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	module.exports = function() {
@@ -206,6 +236,7 @@
 					xhr.open('GET','post.json');
 					xhr.send();
 					xhr.onload = function(){
+						console.log(xhr.response)
 						resolve(xhr.response);
 					}
 				});

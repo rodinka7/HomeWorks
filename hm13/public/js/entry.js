@@ -1,5 +1,3 @@
-var map = require('./map.js'),
-	common = require('./common.js');
+var map = require('./map.js');
 
 map();
-common();

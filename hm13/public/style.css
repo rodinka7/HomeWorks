@@ -49,14 +49,9 @@ body {
 	font-size: 12px;
 	font-weight: 300;
 }
-.popup__header-marker, .popup__header-close {
+.popup__header-marker{
 	width: 20px;
 	height: 20px;
-}
-.popup__header-close:hover {
-	opacity: .7;
-
-	cursor: pointer;
 }
 .popup__main {
 	padding: 10px;

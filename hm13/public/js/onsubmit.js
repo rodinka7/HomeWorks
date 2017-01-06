@@ -1,4 +1,4 @@
-module.exports = function(coords){
+module.exports = function(){
 	return new Promise(function(resolve){
 		let result = [];
 
@@ -24,18 +24,6 @@ module.exports = function(coords){
 			document.querySelector('.popup__main-reviews').innerHTML = fn({list: result}); 
 			document.querySelector('.popup__header-text').innerHTML = fn2({list: result}); 
 		};
-		
-		map.addEventListener('click', function(e){
-			if (e.target.tagName === 'YMAPS') {
-				popup.style.display = 'block';
-				popup.style.left = e.pageX + 'px';
-				popup.style.top = e.pageY + 'px';
-			}
-
-			if (e.target.classList.contains('popup__header-close')){
-				popup.style.display = 'none';
-			}
-		});
 
 		btn.addEventListener('click', function(e){
 			e.preventDefault();
@@ -49,12 +37,10 @@ module.exports = function(coords){
 				}
 			});
 
-			formdata.coords = coords;
 			formdata.date = new Date();
 			
 			result.push(formdata);
 			
-			console.log(result)
 			return new Promise(function(resolve, reject){
 				
 				let	xhr = new XMLHttpRequest();

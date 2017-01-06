@@ -8,6 +8,7 @@ module.exports = function() {
 				xhr.open('GET','post.json');
 				xhr.send();
 				xhr.onload = function(){
+					console.log(xhr.response)
 					resolve(xhr.response);
 				}
 			});
