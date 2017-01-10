@@ -1,29 +1,12 @@
-module.exports = function(){
+let start = require('./start.js');
+
+module.exports = function(coords){
 	return new Promise(function(resolve){
 		let result = [];
 
-		function requestGet(){
-			return new Promise(function(resolve){
-				let xhr = new XMLHttpRequest();
-				xhr.open('GET','post.json');
-				xhr.send();
-				xhr.onload = function(){
-					resolve(xhr.response);
-				}
-			});
-		};
-
-		function handlebar(res){
+		start().then((res)=>{
 			result = JSON.parse(res);
-			
-			let source = review.innerHTML,
-				source2 = place.innerHTML,
-				fn = Handlebars.compile(source),
-				fn2 = Handlebars.compile(source2);
-			
-			document.querySelector('.popup__main-reviews').innerHTML = fn({list: result}); 
-			document.querySelector('.popup__header-text').innerHTML = fn2({list: result}); 
-		};
+		});
 
 		btn.addEventListener('click', function(e){
 			e.preventDefault();
@@ -38,7 +21,9 @@ module.exports = function(){
 			});
 
 			formdata.date = new Date();
-			
+			formdata.coords = coords;
+
+			console.log(formdata)
 			result.push(formdata);
 			
 			return new Promise(function(resolve, reject){
@@ -56,7 +41,8 @@ module.exports = function(){
 			}).then(function(){
 				return requestGet();		
 			}).then(function(res){
-				handlebar(res);
+				result = JSON.parse(res);
+				handlebar();
 				document.forms.form.reset();
 				resolve(res);
 			})

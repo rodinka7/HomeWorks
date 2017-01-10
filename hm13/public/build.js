@@ -52,15 +52,15 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	let balloon = __webpack_require__(3),
-		onsubmit = __webpack_require__(4),
-		start = __webpack_require__(5);
+	let balloon = __webpack_require__(2),
+		onsubmit = __webpack_require__(3),
+		handlebar = __webpack_require__(5),
+		start = __webpack_require__(4);
 
 	module.exports = function(){
 		let myMap,
 			myPlacemark,
-			result = [],
-			element;
+			result = [];
 
 		ymaps.ready(init);
 
@@ -75,37 +75,58 @@
 
 			start().then((res) => {
 				if(res.length){
-					result = JSON.parse(res)
+					result = JSON.parse(res);				
 
 					result.forEach((item) => {
-						myPlacemark = createPlacemark(item.coords, result.length, item.place);
+						myPlacemark = new ymaps.Placemark(item.coords,{
+							balloonContentBody: balloon(),
+					        iconContent: result.length
+						}, {
+							iconColor: '#ff8663'
+						});
+
 						myMap.geoObjects.add(myPlacemark);
+
+						myPlacemark.balloon.events.add('open', () => {
+							handlebar();
+						})
 					});
+
 				}
 			});
 
-			myMap.events.add('click', function(e){
-				coords = e.get('coords');
-				
-				result = JSON.parse(res);
+			myMap.events.add('click', function(e){			
+				return new Promise(function(resolve){
+					coords = e.get('coords');
 
-				myPlacemark = balloon(coords, myMap, result.length, result[0].place);
-				myPlacemark.balloon.open();
-				myMap.geoObjects.add(myPlacemark);
-				
+					myPlacemark = new ymaps.Placemark(coords,{
+						balloonContentBody: balloon(),
+				        iconContent: result.length
+					}, {
+						iconColor: '#ff8663'
+					});
+
+					myMap.geoObjects.add(myPlacemark);
+					myPlacemark.balloon.open();
+					
+					myPlacemark.balloon.events.add('open', () => {
+						handlebar();
+						resolve();
+					})
+				}).then(() => {
+					onsubmit(coords);
+				});
 			});
 
 		}
 	};
 
 /***/ },
-/* 2 */,
-/* 3 */
+/* 2 */
 /***/ function(module, exports) {
 
 	module.exports = function(coords, myMap, count, place){
-	    return new ymaps.Placemark(coords, {
-	        balloonContentBody: [
+	    return [
 	            `<div class="popup__header">
 	                <span class="popup__header-inner">
 	                    <i class="fa fa-map-marker popup__header-marker" aria-hidden="true"></i>
@@ -144,44 +165,22 @@
 	                    </form>
 	                </div>
 	            </div>`
-	        ].join('')
-	    }, {
-	        iconColor: '#ff8663',
-	        iconContent: count,
-	        hintContent: place
-	    });
+	        ].join('');
 	};
 
 /***/ },
-/* 4 */
-/***/ function(module, exports) {
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function(){
+	let start = __webpack_require__(4);
+
+	module.exports = function(coords){
 		return new Promise(function(resolve){
 			let result = [];
 
-			function requestGet(){
-				return new Promise(function(resolve){
-					let xhr = new XMLHttpRequest();
-					xhr.open('GET','post.json');
-					xhr.send();
-					xhr.onload = function(){
-						resolve(xhr.response);
-					}
-				});
-			};
-
-			function handlebar(res){
+			start().then((res)=>{
 				result = JSON.parse(res);
-				
-				let source = review.innerHTML,
-					source2 = place.innerHTML,
-					fn = Handlebars.compile(source),
-					fn2 = Handlebars.compile(source2);
-				
-				document.querySelector('.popup__main-reviews').innerHTML = fn({list: result}); 
-				document.querySelector('.popup__header-text').innerHTML = fn2({list: result}); 
-			};
+			});
 
 			btn.addEventListener('click', function(e){
 				e.preventDefault();
@@ -196,7 +195,9 @@
 				});
 
 				formdata.date = new Date();
-				
+				formdata.coords = coords;
+
+				console.log(formdata)
 				result.push(formdata);
 				
 				return new Promise(function(resolve, reject){
@@ -214,7 +215,8 @@
 				}).then(function(){
 					return requestGet();		
 				}).then(function(res){
-					handlebar(res);
+					result = JSON.parse(res);
+					handlebar();
 					document.forms.form.reset();
 					resolve(res);
 				})
@@ -223,12 +225,11 @@
 	};
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports) {
 
 	module.exports = function() {
 		return new Promise(function(resolve){
-			let result = [];
 
 			function requestGet(){
 				return new Promise(function(resolve){
@@ -236,32 +237,32 @@
 					xhr.open('GET','post.json');
 					xhr.send();
 					xhr.onload = function(){
-						console.log(xhr.response)
 						resolve(xhr.response);
 					}
 				});
 			};
 
-			function handlebar(res){
-				result = JSON.parse(res);
-				
-				let source = review.innerHTML,
-					source2 = place.innerHTML,
-					fn = Handlebars.compile(source),
-					fn2 = Handlebars.compile(source2);
-				
-				document.querySelector('.popup__main-reviews').innerHTML = fn({list: result}); 
-				document.querySelector('.popup__header-text').innerHTML = fn2({list: result}); 
-			};
-
 			requestGet().then(function(res){
 				if (res.length){
-					handlebar(res);
 					resolve(res);
 				}
 			});
 		});
 	}
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	module.exports = function(){
+		let source = review.innerHTML,
+			source2 = place.innerHTML,
+			fn = Handlebars.compile(source),
+			fn2 = Handlebars.compile(source2);
+		
+		document.querySelector('.popup__main-reviews').innerHTML = fn({list: result}); 
+		document.querySelector('.popup__header-text').innerHTML = fn2({list: result}); 
+	};
 
 /***/ }
 /******/ ]);

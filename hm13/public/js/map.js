@@ -1,12 +1,12 @@
 let balloon = require('./balloon.js'),
 	onsubmit = require('./onsubmit.js'),
+	handlebar = require('./handlebar.js'),
 	start = require('./start.js');
 
 module.exports = function(){
 	let myMap,
 		myPlacemark,
-		result = [],
-		element;
+		result = [];
 
 	ymaps.ready(init);
 
@@ -21,24 +21,47 @@ module.exports = function(){
 
 		start().then((res) => {
 			if(res.length){
-				result = JSON.parse(res)
+				result = JSON.parse(res);				
 
 				result.forEach((item) => {
-					myPlacemark = createPlacemark(item.coords, result.length, item.place);
+					myPlacemark = new ymaps.Placemark(item.coords,{
+						balloonContentBody: balloon(),
+				        iconContent: result.length
+					}, {
+						iconColor: '#ff8663'
+					});
+
 					myMap.geoObjects.add(myPlacemark);
+
+					myPlacemark.balloon.events.add('open', () => {
+						handlebar();
+					})
 				});
+
 			}
 		});
 
-		myMap.events.add('click', function(e){
-			coords = e.get('coords');
-			
-			result = JSON.parse(res);
+		myMap.events.add('click', function(e){			
+			return new Promise(function(resolve){
+				coords = e.get('coords');
 
-			myPlacemark = balloon(coords, myMap, result.length, result[0].place);
-			myPlacemark.balloon.open();
-			myMap.geoObjects.add(myPlacemark);
-			
+				myPlacemark = new ymaps.Placemark(coords,{
+					balloonContentBody: balloon(),
+			        iconContent: result.length
+				}, {
+					iconColor: '#ff8663'
+				});
+
+				myMap.geoObjects.add(myPlacemark);
+				myPlacemark.balloon.open();
+				
+				myPlacemark.balloon.events.add('open', () => {
+					handlebar();
+					resolve();
+				})
+			}).then(() => {
+				onsubmit(coords);
+			});
 		});
 
 	}

@@ -1,6 +1,5 @@
 module.exports = function(coords, myMap, count, place){
-    return new ymaps.Placemark(coords, {
-        balloonContentBody: [
+    return [
             `<div class="popup__header">
                 <span class="popup__header-inner">
                     <i class="fa fa-map-marker popup__header-marker" aria-hidden="true"></i>
@@ -39,10 +38,5 @@ module.exports = function(coords, myMap, count, place){
                     </form>
                 </div>
             </div>`
-        ].join('')
-    }, {
-        iconColor: '#ff8663',
-        iconContent: count,
-        hintContent: place
-    });
+        ].join('');
 };
