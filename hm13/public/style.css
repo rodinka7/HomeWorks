@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Fira+Sans&subset=cyrillic');
+
 body {
 	padding: 0;
 	margin: 0;
@@ -18,8 +19,6 @@ body {
 	height: 100vh;
 }
 .popup {
-	position: absolute;
-
 	z-index: 100;
 	width: 380px;
 	height: auto;
@@ -28,8 +27,6 @@ body {
 	overflow: hidden;
 
 	background: #fff;
-
-	display: none;
 }
 .popup__header {
 	height: 40px;

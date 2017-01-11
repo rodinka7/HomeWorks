@@ -40,15 +40,14 @@ var server = http.createServer(function(req, res) {
         });
 
     if (req.method === 'POST') {
-        req.on('data', function(data){
+        utils.readPost().then((data)=>{
             utils.writeFile(`./public/${config.post}`, data, encoding)
                 .then(content => {
                     res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);
                     res.writeHead(code);
-                    res.write(content);
+                    res.write('Данные сохранены успешно!');
                     res.end();
                 });
-
         });
     };
 });

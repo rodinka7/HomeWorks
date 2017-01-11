@@ -20,7 +20,7 @@
       "encoding": ""
     },
     ".json": {
-      "type": "application/json",
+      "type": "text/json",
       "encoding": "utf-8"
     }
   }
