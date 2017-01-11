@@ -20,7 +20,7 @@ body {
 }
 .popup {
 	z-index: 100;
-	width: 380px;
+	width: 300px;
 	height: auto;
 
 	border-radius: 10px;
@@ -29,7 +29,7 @@ body {
 	background: #fff;
 }
 .popup__header {
-	height: 40px;
+	height: 50px;
 	width: 100%;
 
 	background: #ff8663;
@@ -39,7 +39,7 @@ body {
 	justify-content: space-between;
 	align-items: center;
 
-	padding: 10px;
+	padding: 5px;
 	box-sizing: border-box;
 }
 .popup__header-text {
@@ -103,7 +103,7 @@ body {
 }
 .popup__textarea {
 	resize: none;
-	height: 130px;
+	height: 80px;
 }
 
 .btn {
@@ -126,16 +126,21 @@ body {
 	background: #f76942;
 }
 
-::-webkit-scrollbar{
-    width:3px;
+.popup::-webkit-scrollbar{
+    width: .5px;
 }
-::-webkit-scrollbar-thumb{
-    border-width:1px 1px 1px 2px;
+.popup::-webkit-scrollbar-thumb{
+    border-width:1px 1px 1px 1px;
     border-color: #777;
     background-color: #aaa;
 }
-::-webkit-scrollbar-thumb:hover{
-    border-width: 1px 1px 1px 2px;
+.popup::-webkit-scrollbar-thumb:hover{
+    border-width: 1px 1px 1px 1px;
     border-color: #555;
     background-color: #777;
 }
+
+.ballon_header { font-size: 16px; margin-top: 0; margin-bottom: 10px; color: #708090; }
+.ballon_header a { font-size: 12px; } 
+.ballon_body { font-size: 14px; text-align: center;  }
+.ballon_footer { font-size: 12px; text-align: right; color: #7D7D7D; margin-top: 30px; }

@@ -14,7 +14,6 @@ module.exports = function(){
 			placemarkObj = [];
 
 		start('GET', '../post.json').then((res) => {
-
 			myMap = new ymaps.Map('map', {
 				center: [50.45466, 30.5238],
 				zoom: 10,
@@ -47,7 +46,6 @@ module.exports = function(){
 
 			if (res){
 				placemarkObj = JSON.parse(res);
-
 				var placemarks = [];
 				placemarkObj.forEach(function(item){
 					var data = {
@@ -57,26 +55,51 @@ module.exports = function(){
 						place: item.place,
 						name: item.name,
 						address : item.address, 
-						coords: item.coords
+						coords: item.coords,
 					},
 					options = {
 						balloonPanelMaxMapArea: 0,
-						openBalloonOnClick: false
+						openBalloonOnClick: false,
+						iconColor: '#ff8663'
 					};
 					
 					placemarks.push(new ymaps.Placemark(data.coords, data, options));
 				});
+				 var customItemContentLayout = ymaps.templateLayoutFactory.createClass(
+			        // Флаг "raw" означает, что данные вставляют "как есть" без экранирования html.
+			        '<h2 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h2>' +
+			            '<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>' +
+			            '<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>'
+			    );
 
-				cluster().add(placemarks);
+			    var cluster = new ymaps.Clusterer({
+			        clusterDisableClickZoom: true,
+			        clusterOpenBalloonOnClick: true,
+			        // Устанавливаем стандартный макет балуна кластера "Карусель".
+			        clusterBalloonContentLayout: 'cluster#balloonCarousel',
+			        // Устанавливаем собственный макет.
+			        clusterBalloonItemContentLayout: customItemContentLayout,
+			        // Устанавливаем режим открытия балуна. 
+			        // В данном примере балун никогда не будет открываться в режиме панели.
+			        clusterBalloonPanelMaxMapArea: 0,
+			        // Устанавливаем размеры макета контента балуна (в пикселях).
+			        clusterBalloonContentLayoutWidth: 200,
+			        clusterBalloonContentLayoutHeight: 130,
+			        // Устанавливаем максимальное количество элементов в нижней панели на одной странице
+			        clusterBalloonPagerSize: 5,
+			        clusterIconColor: '#ff8663'
+			    });
+
+				cluster.add(placemarks);
 				
-				myMap.geoObjects.add(cluster());
+				myMap.geoObjects.add(cluster);
 			};
 
-			cluster().events.add('click', function (event){
+			cluster.events.add('click', function (event){
 				var placemark = event.get('target'),
 					placemarkObj = placemark.properties.get('geoObjects');
-				
 				// если клик по множественной метке то выходим.
+				
 				if (placemarkObj !== undefined){
 					return;
 				};

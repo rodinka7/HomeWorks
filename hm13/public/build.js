@@ -54,7 +54,7 @@
 
 	let onsubmit = __webpack_require__(2),
 		cluster = __webpack_require__(4),
-		balloonOpen = __webpack_require__(7),
+		balloonOpen = __webpack_require__(6),
 		start = __webpack_require__(3);
 
 	module.exports = function(){
@@ -68,7 +68,6 @@
 				placemarkObj = [];
 
 			start('GET', '../post.json').then((res) => {
-
 				myMap = new ymaps.Map('map', {
 					center: [50.45466, 30.5238],
 					zoom: 10,
@@ -101,7 +100,6 @@
 
 				if (res){
 					placemarkObj = JSON.parse(res);
-
 					var placemarks = [];
 					placemarkObj.forEach(function(item){
 						var data = {
@@ -111,26 +109,51 @@
 							place: item.place,
 							name: item.name,
 							address : item.address, 
-							coords: item.coords
+							coords: item.coords,
 						},
 						options = {
 							balloonPanelMaxMapArea: 0,
-							openBalloonOnClick: false
+							openBalloonOnClick: false,
+							iconColor: '#ff8663'
 						};
 						
 						placemarks.push(new ymaps.Placemark(data.coords, data, options));
 					});
+					 var customItemContentLayout = ymaps.templateLayoutFactory.createClass(
+				        // Флаг "raw" означает, что данные вставляют "как есть" без экранирования html.
+				        '<h2 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h2>' +
+				            '<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>' +
+				            '<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>'
+				    );
 
-					cluster().add(placemarks);
+				    var cluster = new ymaps.Clusterer({
+				        clusterDisableClickZoom: true,
+				        clusterOpenBalloonOnClick: true,
+				        // Устанавливаем стандартный макет балуна кластера "Карусель".
+				        clusterBalloonContentLayout: 'cluster#balloonCarousel',
+				        // Устанавливаем собственный макет.
+				        clusterBalloonItemContentLayout: customItemContentLayout,
+				        // Устанавливаем режим открытия балуна. 
+				        // В данном примере балун никогда не будет открываться в режиме панели.
+				        clusterBalloonPanelMaxMapArea: 0,
+				        // Устанавливаем размеры макета контента балуна (в пикселях).
+				        clusterBalloonContentLayoutWidth: 200,
+				        clusterBalloonContentLayoutHeight: 130,
+				        // Устанавливаем максимальное количество элементов в нижней панели на одной странице
+				        clusterBalloonPagerSize: 5,
+				        clusterIconColor: '#ff8663'
+				    });
+
+					cluster.add(placemarks);
 					
-					myMap.geoObjects.add(cluster());
+					myMap.geoObjects.add(cluster);
 				};
 
-				cluster().events.add('click', function (event){
+				cluster.events.add('click', function (event){
 					var placemark = event.get('target'),
 						placemarkObj = placemark.properties.get('geoObjects');
-					
 					// если клик по множественной метке то выходим.
+					
 					if (placemarkObj !== undefined){
 						return;
 					};
@@ -161,6 +184,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	let start = __webpack_require__(3),
+		balloonOpen = __webpack_require__(6),
 		cluster = __webpack_require__(4);
 
 	module.exports = function(event, placemarkObj, reviewObj, myMap, placemarkCoords, placemarkAddress){
@@ -175,6 +199,7 @@
 				form.place.value === '' ||
 				form.message.value === ''){
 				alert('Заполните все поля формы!');
+				return;
 			};
 
 			var date = new Date,
@@ -190,9 +215,7 @@
 				coords: placemarkCoords,  // координаты.
 			};
 
-			console.log(data)
 			placemarkObj.push(data);
-
 			
 			if(reviewObj.length === 0) {
 				reviews.innerHTML = '';
@@ -206,8 +229,34 @@
 	                		<div class="popup__main-text">${data.message}</div>`;
 			reviews.appendChild(div);
 
-			var myPlacemark = new ymaps.Placemark( placemarkCoords, {
-					balloonContentHeader: data.place + '</br><a href="#" class="openMapBallon" data-coords="' + placemarkCoords + '" data-address="' + placemarkAddress + '">' + placemarkAddress + '</a>', // плюс сюда адрес ссылкой вставить.
+			var myLayout = new ymaps.templateLayoutFactory.createClass(
+				'<h2 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h2>' +
+					'<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>' +
+					'<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>'
+			);
+
+			var clusterer = new ymaps.Clusterer({
+				clusterDisableClickZoom: true,
+				clusterOpenBalloonOnClick: true,
+				// Устанавливаем стандартный макет балуна кластера "Карусель".
+				clusterBalloonContentLayout: 'cluster#balloonCarousel',
+				// Устанавливаем собственный макет.
+				clusterBalloonItemContentLayout: myLayout,
+				// Устанавливаем режим открытия балуна. 
+				// В данном примере балун никогда не будет открываться в режиме панели.
+				clusterBalloonPanelMaxMapArea: 0,
+				// Устанавливаем размеры макета контента балуна (в пикселях).
+				clusterBalloonContentLayoutWidth: 200,
+				clusterBalloonContentLayoutHeight: 130,
+				// Устанавливаем максимальное количество элементов в нижней панели на одной странице
+				clusterBalloonPagerSize: 5,
+				clusterHideIconOnBalloonOpen: false,
+				geoObjectHideIconOnBalloonOpen: false,
+				clusterIconColor: '#ff8663'
+			});
+
+			var myPlacemark = new ymaps.Placemark(placemarkCoords, {
+					balloonContentHeader: data.place + '</br><a href="#" class="openMapBallon" data-coords="' + placemarkCoords + '" data-address="' + placemarkAddress + '">' + placemarkAddress + '</a>',
 					balloonContentBody: data.message, // отзыв
 					balloonContentFooter: data.date, // дата создания
 					place: data.place, // место
@@ -216,14 +265,12 @@
 					coords: data.coords
 				}, {
 					balloonPanelMaxMapArea: 0,
-					openBalloonOnClick: false
-				},{
+					openBalloonOnClick: false,
 					iconColor: '#ff8663'
 				});
-
-			cluster().add(myPlacemark);
 			
-			myMap.geoObjects.add(cluster());
+			clusterer.add(myPlacemark);
+			myMap.geoObjects.add(clusterer);
 			
 			form.reset();
 
@@ -242,7 +289,7 @@
 				return item.address === placemarkAddress;
 			});
 			
-			balloonOpen(placemarkCoords, placemarkAddress, reviewObj);
+			balloonOpen(placemarkCoords, placemarkAddress, reviewObj, myMap);
 		};
 	};
 
@@ -308,7 +355,7 @@
 /***/ function(module, exports) {
 
 	module.exports = function(){
-		return ymaps.templateLayoutFactory.createClass(
+		return new ymaps.templateLayoutFactory.createClass(
 			'<h2 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h2>' +
 				'<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>' +
 				'<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>'
@@ -316,11 +363,26 @@
 	}
 
 /***/ },
-/* 6 */,
-/* 7 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = function(coords, address, reviewObj, myMap){
+		var reviewsDiv = document.createElement('div');
+		if(reviewObj.length > 0){
+			reviewObj.forEach((item)=>{
+				var div = document.createElement('div');
+				div.className = 'popup__main-review';
+				div.innerHTML = `<span class="popup__main-name">${item.name}</span>
+	                    		<span class="popup__main-place">${item.place}</span>
+	                    		<span class="popup__main-date">${item.date}</span>
+	                    		<div class="popup__main-text">${item.message}</div>`;
+				reviewsDiv.appendChild(div);
+			});
+		} else {
+			reviewsDiv.innerHTML = 'Отзывов пока нет...';
+		};
+
+		console.log(reviewsDiv)
 		myMap.balloon.open(coords,
 			`<div class="popup">
 				<div class="popup__header">
@@ -331,7 +393,7 @@
 		        </div>
 		        <div class="popup__main">
 		            <div class="popup__main-reviews" id="reviews">
-		                
+		                ${reviewsDiv.innerHTML}
 		            </div>
 		            
 		            <div class="popup__main-add clearfix">
@@ -349,20 +411,6 @@
 				closeButton: true
 			}
 		);
-
-		if(reviewObj.length > 0){
-			reviewObj.forEach((item)=>{
-				var div = document.createElement('div');
-				div.className = 'popup__main-review';
-				div.innerHTML = `<span class="popup__main-name">item.name</span>
-	                    		<span class="popup__main-place">item.place</span>
-	                    		<span class="popup__main-date">item.date</span>
-	                    		<div class="popup__main-text">item.message</div>`;
-				reviews.appendChild(div);
-			});
-		} else {
-			reviews.innerHTML = 'Отзывов пока нет...';
-		};
 	};
 
 /***/ }

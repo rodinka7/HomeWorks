@@ -40,7 +40,7 @@ var server = http.createServer(function(req, res) {
         });
 
     if (req.method === 'POST') {
-        utils.readPost().then((data)=>{
+        utils.readPost(req).then((data)=>{
             utils.writeFile(`./public/${config.post}`, data, encoding)
                 .then(content => {
                     res.setHeader('Content-Type', `${mimeType}; charset=utf-8`);

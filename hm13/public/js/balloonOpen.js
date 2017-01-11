@@ -1,4 +1,20 @@
 module.exports = function(coords, address, reviewObj, myMap){
+	var reviewsDiv = document.createElement('div');
+	if(reviewObj.length > 0){
+		reviewObj.forEach((item)=>{
+			var div = document.createElement('div');
+			div.className = 'popup__main-review';
+			div.innerHTML = `<span class="popup__main-name">${item.name}</span>
+                    		<span class="popup__main-place">${item.place}</span>
+                    		<span class="popup__main-date">${item.date}</span>
+                    		<div class="popup__main-text">${item.message}</div>`;
+			reviewsDiv.appendChild(div);
+		});
+	} else {
+		reviewsDiv.innerHTML = 'Отзывов пока нет...';
+	};
+
+	console.log(reviewsDiv)
 	myMap.balloon.open(coords,
 		`<div class="popup">
 			<div class="popup__header">
@@ -9,7 +25,7 @@ module.exports = function(coords, address, reviewObj, myMap){
 	        </div>
 	        <div class="popup__main">
 	            <div class="popup__main-reviews" id="reviews">
-	                
+	                ${reviewsDiv.innerHTML}
 	            </div>
 	            
 	            <div class="popup__main-add clearfix">
@@ -27,18 +43,4 @@ module.exports = function(coords, address, reviewObj, myMap){
 			closeButton: true
 		}
 	);
-
-	if(reviewObj.length > 0){
-		reviewObj.forEach((item)=>{
-			var div = document.createElement('div');
-			div.className = 'popup__main-review';
-			div.innerHTML = `<span class="popup__main-name">item.name</span>
-                    		<span class="popup__main-place">item.place</span>
-                    		<span class="popup__main-date">item.date</span>
-                    		<div class="popup__main-text">item.message</div>`;
-			reviews.appendChild(div);
-		});
-	} else {
-		reviews.innerHTML = 'Отзывов пока нет...';
-	};
 };

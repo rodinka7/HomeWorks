@@ -25,7 +25,7 @@ module.exports = {
     },
     readPost(req) {
         return new Promise((resolve,reject)=>{
-            var post;
+            var post = '';
         
             req.on('data', (chunk) => {
                 post +=chunk;
